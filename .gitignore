@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+dist/
+
+# iOS / Xcode
+*.xcuserdata
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+build/
+.DS_Store
+
+# Flutter (if added)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.lock
+
+# Local tools
+.tools/
+

@@ -1,0 +1,23 @@
+name: FanZone
+options:
+  bundleIdPrefix: com.fanzone
+  deploymentTarget:
+    iOS: "16.0"
+targets:
+  FanZone:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: FanZone
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fanzone.app
+        INFOPLIST_FILE: FanZone/Info.plist
+        SWIFT_VERSION: "5.0"
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: NO
+        CODE_SIGNING_ALLOWED: NO

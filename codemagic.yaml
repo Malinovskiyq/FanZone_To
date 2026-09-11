@@ -1,0 +1,55 @@
+workflows:
+  ios-native:
+    name: iOS Native (Swift)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    working_directory: ios/FanZone
+    environment:
+      xcode: latest
+    scripts:
+      - name: Generate Xcode Project with XcodeGen
+        script: |
+          echo "Checking Xcode project..."
+          if [ ! -d "FanZone.xcodeproj" ]; then
+            echo "Installing xcodegen via Homebrew..."
+            brew install xcodegen
+            xcodegen generate
+          fi
+      - name: Build iOS Archive (Unsigned)
+        script: |
+          xcodebuild clean archive \
+            -project FanZone.xcodeproj \
+            -scheme FanZone \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/FanZone.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+      - name: Package IPA
+        script: |
+          mkdir -p build/Payload
+          cp -r build/FanZone.xcarchive/Products/Applications/FanZone.app build/Payload/
+          cd build && zip -r FanZone-unsigned.ipa Payload
+    artifacts:
+      - ios/FanZone/build/*.ipa
+      - ios/FanZone/build/FanZone.xcarchive
+
+  flutter-workflow:
+    name: Flutter Mobile (iOS & Android)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    working_directory: flutter_app
+    environment:
+      flutter: stable
+      xcode: latest
+    scripts:
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Build Android APK
+        script: flutter build apk --release
+      - name: Build iOS (No Codesign)
+        script: flutter build ios --release --no-codesign
+    artifacts:
+      - flutter_app/build/app/outputs/flutter-apk/*.apk
+      - flutter_app/build/ios/iphoneos/*.app
