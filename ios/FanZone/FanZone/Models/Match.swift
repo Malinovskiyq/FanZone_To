@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - Match Status
 
-enum MatchStatus: String, Codable, CaseIterable {
+enum MatchStatus: String, Codable, CaseIterable, Hashable {
     case scheduled = "SCHEDULED"
     case ongoing   = "ONGOING"
     case completed = "COMPLETED"
@@ -57,7 +57,7 @@ enum BookingWindowStatus {
 
 // MARK: - Team
 
-struct Team: Codable, Identifiable, Equatable {
+struct Team: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let name: String
     let city: String?
@@ -73,7 +73,7 @@ struct Team: Codable, Identifiable, Equatable {
 
 // MARK: - Arena
 
-struct Arena: Codable, Identifiable, Equatable {
+struct Arena: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let name: String
     let city: String
@@ -82,7 +82,7 @@ struct Arena: Codable, Identifiable, Equatable {
 
 // MARK: - Fan Sector
 
-struct FanSector: Codable, Identifiable, Equatable {
+struct FanSector: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let matchId: String?
     let name: String
@@ -91,7 +91,7 @@ struct FanSector: Codable, Identifiable, Equatable {
 
 // MARK: - Match
 
-struct Match: Codable, Identifiable, Equatable {
+struct Match: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let homeTeam: Team
     let awayTeam: Team
@@ -109,6 +109,7 @@ struct Match: Codable, Identifiable, Equatable {
     let createdAt: Date?
 
     static func == (lhs: Match, rhs: Match) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     // MARK: Computed
 
@@ -151,10 +152,13 @@ struct Match: Codable, Identifiable, Equatable {
 
 // MARK: - Match Participant (for manager view)
 
-struct MatchParticipant: Codable, Identifiable {
+struct MatchParticipant: Codable, Identifiable, Equatable, Hashable {
     let id: String          // booking id
     let user: User
     let status: BookingStatus
     let attendance: AttendanceRecord?
     let createdAt: Date
+
+    static func == (lhs: MatchParticipant, rhs: MatchParticipant) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }

@@ -88,10 +88,10 @@ struct BookingRequestsView: View {
                                     BookingRequestCard(
                                         booking: booking,
                                         onConfirm: segment == 0 ? {
-                                            Task { await vm.confirm(bookingId: booking.id) }
+                                            _ = Task { await vm.confirm(bookingId: booking.id) }
                                         } : nil,
                                         onReject: segment == 0 ? {
-                                            Task { await vm.reject(bookingId: booking.id) }
+                                            _ = Task { await vm.reject(bookingId: booking.id) }
                                         } : nil
                                     )
                                     .padding(.horizontal, 16)
@@ -589,7 +589,7 @@ struct QRScannerScreenView: View {
                 }
 
                 // Scan again
-                FZSecondaryButton("СКАНИРОВАТЬ СНОВА") { vm.reset() }
+                FZSecondaryButton(title: "СКАНИРОВАТЬ СНОВА") { vm.reset() }
                     .padding(.horizontal, 16)
             }
             .padding(.vertical, 24)

@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - Booking Status
 
-enum BookingStatus: String, Codable, CaseIterable {
+enum BookingStatus: String, Codable, CaseIterable, Hashable {
     case pending   = "PENDING"
     case confirmed = "CONFIRMED"
     case rejected  = "REJECTED"
@@ -56,7 +56,7 @@ enum BookingStatus: String, Codable, CaseIterable {
 
 // MARK: - Attendance Status
 
-enum AttendanceStatus: String, Codable {
+enum AttendanceStatus: String, Codable, Hashable {
     case unknown  = "UNKNOWN"
     case attended = "ATTENDED"
     case absent   = "ABSENT"
@@ -88,7 +88,7 @@ enum AttendanceStatus: String, Codable {
 
 // MARK: - Attendance Record
 
-struct AttendanceRecord: Codable, Identifiable {
+struct AttendanceRecord: Codable, Identifiable, Hashable {
     let id: String
     let bookingId: String?
     let userId: String?
@@ -100,7 +100,7 @@ struct AttendanceRecord: Codable, Identifiable {
 
 // MARK: - Ticket
 
-struct Ticket: Codable, Identifiable {
+struct Ticket: Codable, Identifiable, Hashable {
     let id: String
     let bookingId: String
     let qrToken: String
@@ -120,7 +120,7 @@ struct Ticket: Codable, Identifiable {
 
 // MARK: - Booking
 
-struct Booking: Codable, Identifiable, Equatable {
+struct Booking: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let userId: String?
     let matchId: String?
@@ -135,6 +135,7 @@ struct Booking: Codable, Identifiable, Equatable {
     let attendance: AttendanceRecord?
 
     static func == (lhs: Booking, rhs: Booking) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     var shortId: String { String(id.prefix(8)).uppercased() }
 

@@ -13,6 +13,12 @@ struct FZPrimaryButton: View {
         self.action    = action
     }
 
+    init(title: String, isLoading: Bool = false, action: @escaping () -> Void) {
+        self.title     = title
+        self.isLoading = isLoading
+        self.action    = action
+    }
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 10) {
@@ -31,7 +37,8 @@ struct FZPrimaryButton: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 54)
-        .background(isLoading ? AppTheme.brandPrimary.opacity(0.7) : AppTheme.brandGradient)
+        .background(AppTheme.brandGradient)
+        .opacity(isLoading ? 0.7 : 1.0)
         .clipShape(RoundedRectangle(cornerRadius: AppTheme.radiusMedium, style: .continuous))
         .disabled(isLoading)
         .animation(.easeInOut(duration: 0.2), value: isLoading)
@@ -43,6 +50,16 @@ struct FZPrimaryButton: View {
 struct FZSecondaryButton: View {
     let title: String
     let action: () -> Void
+
+    init(_ title: String, action: @escaping () -> Void) {
+        self.title  = title
+        self.action = action
+    }
+
+    init(title: String, action: @escaping () -> Void) {
+        self.title  = title
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {

@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - User Role
 
-enum UserRole: String, Codable, CaseIterable {
+enum UserRole: String, Codable, CaseIterable, Hashable {
     case user           = "USER"
     case bookingManager = "BOOKING_MANAGER"
     case admin          = "ADMIN"
@@ -26,7 +26,7 @@ enum UserRole: String, Codable, CaseIterable {
 
 // MARK: - User
 
-struct User: Codable, Identifiable, Equatable {
+struct User: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let email: String?
     let phone: String?
@@ -40,6 +40,7 @@ struct User: Codable, Identifiable, Equatable {
     let socialLinks: [SocialLink]?
 
     static func == (lhs: User, rhs: User) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     var displayName: String {
         if let p = profile { return p.fullName }
@@ -55,7 +56,7 @@ struct User: Codable, Identifiable, Equatable {
 
 // MARK: - Profile
 
-struct UserProfile: Codable, Equatable {
+struct UserProfile: Codable, Equatable, Hashable {
     let id: String?
     let userId: String?
     let firstName: String
@@ -74,7 +75,7 @@ struct UserProfile: Codable, Equatable {
 
 // MARK: - Social Link
 
-struct SocialLink: Codable, Identifiable, Equatable {
+struct SocialLink: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let userId: String?
     let platform: String
@@ -88,7 +89,7 @@ struct SocialLink: Codable, Identifiable, Equatable {
     var displayLabel: String { label ?? socialPlatform.displayName }
 }
 
-enum SocialPlatform: String, Codable, CaseIterable {
+enum SocialPlatform: String, Codable, CaseIterable, Hashable {
     case vk        = "VK"
     case telegram  = "TELEGRAM"
     case instagram = "INSTAGRAM"

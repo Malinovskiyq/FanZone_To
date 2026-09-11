@@ -51,7 +51,13 @@ struct UserAvatarView: View {
     }
 
     private var initials: String {
-        user?.profile?.initials ?? user?.username.prefix(2).uppercased().description ?? "?"
+        if let initials = user?.profile?.initials, !initials.isEmpty {
+            return initials
+        }
+        if let username = user?.username, !username.isEmpty {
+            return String(username.prefix(2)).uppercased()
+        }
+        return "?"
     }
 }
 

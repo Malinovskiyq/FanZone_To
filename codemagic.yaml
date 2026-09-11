@@ -6,15 +6,17 @@ workflows:
     working_directory: ios/FanZone
     environment:
       xcode: latest
+      vars:
+        HOMEBREW_NO_AUTO_UPDATE: "1"
     scripts:
       - name: Generate Xcode Project with XcodeGen
         script: |
-          echo "Checking Xcode project..."
-          if [ ! -d "FanZone.xcodeproj" ]; then
+          if ! command -v xcodegen &> /dev/null; then
             echo "Installing xcodegen via Homebrew..."
             brew install xcodegen
-            xcodegen generate
           fi
+          echo "Generating Xcode project..."
+          xcodegen generate
       - name: Build iOS Archive (Unsigned)
         script: |
           xcodebuild clean archive \
