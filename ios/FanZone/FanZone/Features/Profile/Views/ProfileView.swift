@@ -49,6 +49,7 @@ class ProfileViewModel: ObservableObject {
 
 // MARK: - Profile View
 
+@MainActor
 struct ProfileView: View {
     @EnvironmentObject private var auth: AuthManager
     @StateObject private var vm = ProfileViewModel()

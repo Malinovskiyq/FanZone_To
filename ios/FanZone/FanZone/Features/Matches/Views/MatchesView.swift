@@ -44,6 +44,7 @@ class MatchesViewModel: ObservableObject {
 
 // MARK: - Matches View
 
+@MainActor
 struct MatchesView: View {
     @StateObject private var vm = MatchesViewModel()
     @State private var selectedMatch: Match?
@@ -74,8 +75,13 @@ struct MatchesView: View {
         .onChange(of: vm.selectedFilter) { _ in
             Task { await vm.load() }
         }
-        .navigationDestination(item: $selectedMatch) { match in
-            MatchDetailView(match: match)
+        .navigationDestination(isPresented: Binding(
+            get: { selectedMatch != nil },
+            set: { if !$0 { selectedMatch = nil } }
+        )) {
+            if let match = selectedMatch {
+                MatchDetailView(match: match)
+            }
         }
     }
 

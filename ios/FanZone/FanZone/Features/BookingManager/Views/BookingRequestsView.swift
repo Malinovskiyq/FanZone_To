@@ -48,9 +48,22 @@ class BookingRequestsViewModel: ObservableObject {
 
 // MARK: - Booking Requests View (Manager)
 
+@MainActor
 struct BookingRequestsView: View {
     @StateObject private var vm = BookingRequestsViewModel()
     @State private var segment = 0
+
+    private func confirmBooking(_ booking: Booking) {
+        Task {
+            await vm.confirm(bookingId: booking.id)
+        }
+    }
+
+    private func rejectBooking(_ booking: Booking) {
+        Task {
+            await vm.reject(bookingId: booking.id)
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -87,12 +100,8 @@ struct BookingRequestsView: View {
                                 ForEach(list) { booking in
                                     BookingRequestCard(
                                         booking: booking,
-                                        onConfirm: segment == 0 ? {
-                                            _ = Task { await vm.confirm(bookingId: booking.id) }
-                                        } : nil,
-                                        onReject: segment == 0 ? {
-                                            _ = Task { await vm.reject(bookingId: booking.id) }
-                                        } : nil
+                                        onConfirm: segment == 0 ? { confirmBooking(booking) } : nil,
+                                        onReject:  segment == 0 ? { rejectBooking(booking) } : nil
                                     )
                                     .padding(.horizontal, 16)
                                 }
@@ -327,7 +336,7 @@ struct MatchParticipantsView: View {
                 .padding(.bottom, 8)
 
                 // Stats summary
-                if let match = vm.selectedMatch {
+                if vm.selectedMatch != nil {
                     HStack(spacing: 16) {
                         summaryPill("Всего", "\(vm.participants.count)", AppTheme.textSecondary)
                         summaryPill("Подтверждено", "\(vm.participants.filter { $0.status == .confirmed }.count)", AppTheme.success)
@@ -450,7 +459,7 @@ class QRScannerViewModel: ObservableObject {
         isLoading = true
         do {
             try await APIClient.shared.requestEmpty(.markAttendedByQR(qrToken: qrToken))
-            if var result = verificationResult {
+            if let result = verificationResult {
                 verificationResult = QRVerificationResult(
                     isValid: result.isValid, isUsed: true,
                     booking: result.booking, message: "Посещение отмечено"
